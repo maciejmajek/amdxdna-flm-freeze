@@ -4,7 +4,7 @@ GGUF  := models/gpt-oss-20b-Q4_K_M.gguf
 ROCM  ?= /opt/rocm
 MODE  ?= cycles
 
-.PHONY: build freeze
+.PHONY: build freeze info
 freeze: run-vkcube
 
 build: $(LLAMA) $(FLM) $(GGUF)
@@ -33,3 +33,6 @@ gpu_load: gpu_load.hip
 run-hip run-all: gpu_load
 run-%: build
 	./repro.sh $* $(MODE)
+
+info:
+	./info.sh | tee info.txt

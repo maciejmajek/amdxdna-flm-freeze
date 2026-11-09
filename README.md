@@ -45,6 +45,12 @@ Env: `CYCLES`, `DUR` (seconds), `LOOPS` (parallel requests).
 
 Logs go to `runs/<time>-<load>-<mode>/`. Each line of `progress.log` is synced to disk, so after a freeze the last line shows the last step.
 
+## System info
+
+```sh
+make info          # writes info.txt: kernel, BIOS, amdxdna, NPU firmware, XRT, Mesa, packages; no hostname or serials
+```
+
 ## Results
 
 Kernel 7.0.0-31, in-tree amdxdna 0.7.0, NPU firmware 1.1.2.65, XRT 2.21.75, Mesa RADV 25.2.8, BIOS 1.05, GMKtec EVO-X2.
@@ -61,6 +67,10 @@ Kernel 7.0.0-31, in-tree amdxdna 0.7.0, NPU firmware 1.1.2.65, XRT 2.21.75, Mesa
 | `make run-<any> MODE=text` | no freeze |
 
 These results come from the scripts this repo was made from. Load and requests are the same; paths and log layout differ.
+
+## Logs
+
+[`logs/`](logs) has the kernel log tails of our 3 freezes and the Data Fabric MCE. In all 3, the last line is a `MSG_OP_CHAIN_EXEC_NPU` send on mailbox channel 127 that never gets a response. The MCE also lands between a channel 127 send and its response. IP and MAC addresses and user and host names are removed.
 
 ## Kernel log over the network
 
