@@ -4,14 +4,8 @@ GGUF  := models/gpt-oss-20b-Q4_K_M.gguf
 ROCM  ?= /opt/rocm
 MODE  ?= cycles
 
-.PHONY: deps build freeze
+.PHONY: build freeze
 freeze: run-vkcube
-
-deps:
-	sudo add-apt-repository -y ppa:lemonade-team/stable
-	sudo apt-get install -y build-essential cmake ninja-build git curl cargo \
-	  libvulkan-dev glslc vulkan-tools \
-	  libxrt-dev libxrt-npu2 libedit-dev uuid-dev libdrm-dev
 
 build: $(LLAMA) $(FLM) $(GGUF)
 	$(FLM) pull gemma3:4b

@@ -9,7 +9,9 @@ Repro for a hard machine freeze on AMD Strix Halo (Ryzen AI MAX+ 395) when the X
 ```sh
 git clone --recurse-submodules --shallow-submodules https://github.com/maciejmajek/amdxdna-flm-freeze.git
 cd amdxdna-flm-freeze
-make deps          # apt packages (sudo)
+sudo add-apt-repository -y ppa:lemonade-team/stable
+sudo apt-get install -y build-essential cmake ninja-build git curl cargo \
+  libvulkan-dev glslc vulkan-tools libxrt-dev libxrt-npu2 libedit-dev uuid-dev libdrm-dev
 make build         # llama.cpp (Vulkan), FastFlowLM, gpt-oss-20b GGUF (12 GB), gemma3:4b
 sudo modprobe amdxdna
 ```
