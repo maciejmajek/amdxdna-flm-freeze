@@ -14,7 +14,7 @@ LOOPS=${LOOPS:-4}
 OUT=$DIR/runs/$(date +%Y%m%d-%H%M%S)-$LOAD-$MODE
 mkdir -p "$OUT"; cd "$OUT"
 PIDS=""
-trap 'kill $PIDS ${FLMP:-} 2>/dev/null' EXIT
+trap 'kill $PIDS ${FLMP:-} 2>/dev/null; sleep 2; kill -9 $PIDS ${FLMP:-} 2>/dev/null' EXIT
 # Each line is synced to disk, so after a power cycle the last line shows where it froze.
 log() { echo "$(date +%T.%N | cut -c1-12) gpu_busy=$(cat /sys/class/drm/card*/device/gpu_busy_percent 2>/dev/null | head -1) $*" | tee -a progress.log; sync progress.log; }
 
