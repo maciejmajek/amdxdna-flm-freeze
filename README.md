@@ -45,6 +45,28 @@ Env: `CYCLES`, `DUR` (seconds), `LOOPS` (parallel requests).
 
 Logs go to `runs/<time>-<load>-<mode>/`. Each line of `progress.log` is synced to disk, so after a freeze the last line shows the last step.
 
+## Latest driver and XRT
+
+To test with the driver and XRT from [amd/xdna-driver](https://github.com/amd/xdna-driver) main instead of the distribution ones:
+
+```sh
+git clone https://github.com/amd/xdna-driver.git ~/xdna-driver   # needs git-lfs
+cd ~/xdna-driver && git submodule update --init --recursive
+sudo ./tools/amdxdna_deps.sh
+cd xrt/build && ./build.sh -npu -opt
+sudo apt install ./Release/xrt_*-base.deb ./Release/xrt_*-base-dev.deb ./Release/xrt_*-npu.deb   # installs to /opt/xilinx/xrt
+cd ../../build && ./build.sh -release
+sudo apt install ./Release/xrt_plugin.*-amdxdna.deb   # DKMS amdxdna, replaces the loaded module
+```
+
+Then, in this repo:
+
+```sh
+make freeze-opt-xrt   # builds flm against /opt/xilinx/xrt and runs make freeze with it
+```
+
+Undo: `sudo apt remove xrt-plugin-amdxdna xrt-npu xrt-base-dev xrt-base`.
+
 ## System info
 
 ```sh
@@ -72,7 +94,7 @@ Runs of this repo, unchanged:
 |---|---|---|
 | in-tree amdxdna 0.7.0 | `make freeze` | **freeze** in cycle 1, about 1 s after the first image request |
 | amdxdna 2.27.0 ([amd/xdna-driver](https://github.com/amd/xdna-driver) `55990418`), same firmware and XRT | `make freeze` | **freeze** in cycle 2 |
-| amdxdna 2.27.0 and XRT 2.27.0, flm rebuilt against XRT 2.27 | `FLM=<that flm> make freeze` | **freeze** in cycle 4 |
+| amdxdna 2.27.0 and XRT 2.27.0, flm rebuilt against XRT 2.27 | `make freeze-opt-xrt` | **freeze** in cycle 4 |
 
 The results above the last table come from the scripts this repo was made from. Load and requests are the same; paths and log layout differ.
 
