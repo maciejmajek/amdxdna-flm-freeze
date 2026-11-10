@@ -72,12 +72,13 @@ Runs of this repo, unchanged:
 |---|---|---|
 | in-tree amdxdna 0.7.0 | `make freeze` | **freeze** in cycle 1, about 1 s after the first image request |
 | amdxdna 2.27.0 ([amd/xdna-driver](https://github.com/amd/xdna-driver) `55990418`), same firmware and XRT | `make freeze` | **freeze** in cycle 2 |
+| amdxdna 2.27.0 and XRT 2.27.0, flm rebuilt against XRT 2.27 | `FLM=<that flm> make freeze` | **freeze** in cycle 4 |
 
 The results above the last table come from the scripts this repo was made from. Load and requests are the same; paths and log layout differ.
 
 ## Logs
 
-[`logs/`](logs) has the kernel log tails of our 5 freezes and the Data Fabric MCE. In all 5, the last line is a `MSG_OP_CHAIN_EXEC_NPU` send on mailbox channel 127 that never gets a response. The MCE also lands between a channel 127 send and its response. IP and MAC addresses and user and host names are removed.
+[`logs/`](logs) has the kernel log tails of our 6 freezes and the Data Fabric MCE. In all 6, the last line is a `MSG_OP_CHAIN_EXEC_NPU` send on mailbox channel 127 that never gets a response. The MCE also lands between a channel 127 send and its response. IP and MAC addresses and user and host names are removed.
 
 ## Kernel log over the network
 
