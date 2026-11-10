@@ -2,12 +2,12 @@
 # Usage: ./repro.sh <load> [mode]
 #   load: none | hip | cube | vk | vkcube | all   (what keeps the iGPU busy)
 #   mode: cycles | loop | text                     (what the NPU does)
-# Env: CYCLES (cycles mode, default 20), DUR (loop/text seconds, default 30), LOOPS (parallel requests, default 4).
+# Env: FLM (flm binary), CYCLES (cycles mode, default 20), DUR (loop/text seconds, default 30), LOOPS (parallel requests, default 4).
 # WARNING: load vkcube can freeze the machine; a power cycle is then needed.
 set -u
 LOAD=${1:?load: none|hip|cube|vk|vkcube|all} MODE=${2:-cycles}
 DIR=$(cd "$(dirname "$0")" && pwd)
-FLM=$DIR/FastFlowLM/src/build/flm
+FLM=${FLM:-$DIR/FastFlowLM/src/build/flm}
 LLAMA=$DIR/llama.cpp/build/bin/llama-server
 GGUF=$DIR/models/gpt-oss-20b-Q4_K_M.gguf
 LOOPS=${LOOPS:-4}
