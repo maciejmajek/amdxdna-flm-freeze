@@ -98,9 +98,38 @@ Runs of this repo, unchanged:
 
 The results above the last table come from the scripts this repo was made from. Load and requests are the same; paths and log layout differ.
 
+### Fabric clock (FCLK)
+
+The freeze depends on the iGPU/SoC clock management. With FCLK pinned, `make freeze` does not freeze. Run as root, `card1` is the iGPU here:
+
+```sh
+c=/sys/class/drm/card1/device
+echo profile_peak > $c/power_dpm_force_performance_level   # all clocks pinned, or:
+echo manual > $c/power_dpm_force_performance_level
+echo 7 > $c/pp_dpm_fclk                                     # FCLK only, 2000 MHz
+echo "0 7" > $c/pp_dpm_fclk                                 # FCLK dynamic again
+echo auto > $c/power_dpm_force_performance_level           # default
+```
+
+The setting is lost at reboot. On this APU, `manual` mode accepts `pp_dpm_fclk` and `pp_dpm_socclk`; `pp_dpm_sclk` and `pp_dpm_mclk` give an I/O error.
+
+amdxdna 2.27.0, XRT 2.27.0, NPU firmware 1.1.2.65, `make freeze`:
+
+| setting | result |
+|---|---|
+| `auto` (default) | **freeze** in cycle 1 to 4, every run |
+| `auto`, amdxdna loaded with `force_iova=1` | **freeze** in cycle 1 |
+| `auto`, NPU turbo (`sudo xrt-smi configure --pmode turbo`, clock gating off) | **freeze** in cycle 1 |
+| `profile_peak` | no freeze, 20/20 cycles (2 runs) |
+| `auto` again, same boot | **freeze** in cycle 2 |
+| `manual`, only FCLK pinned at 2000 MHz (SCLK still dynamic up to 2900 MHz) | no freeze, 20/20 cycles |
+| `manual`, FCLK released, same boot | **freeze** in cycle 5 |
+
+`flm serve --pmode` has no effect on Linux: FastFlowLM sets the power mode only on Windows. Use `xrt-smi`.
+
 ## Logs
 
-[`logs/`](logs) has the kernel log tails of our 6 freezes and the Data Fabric MCE. In all 6, the last line is a `MSG_OP_CHAIN_EXEC_NPU` send on mailbox channel 127 that never gets a response. The MCE also lands between a channel 127 send and its response. IP and MAC addresses and user and host names are removed.
+[`logs/`](logs) has the kernel log tails of our 9 freezes and the Data Fabric MCE. In all 9, the last line is a `MSG_OP_CHAIN_EXEC_NPU` send on mailbox channel 127 that never gets a response. The MCE appeared 3 times, each time between a channel 127 send and its response. IP and MAC addresses and user and host names are removed.
 
 ## Kernel log over the network
 

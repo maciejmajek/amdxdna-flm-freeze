@@ -1,15 +1,46 @@
-# Data Fabric deferred error. Same boot as freeze 1, during a run with llama.cpp Vulkan + NPU image requests that did NOT freeze.
-[  729.321936] amdxdna 0000:c6:00.1: xdna_mailbox.126: opcode 0x18 size 24 id 0x1d0000d7
-[  729.323974] amdxdna 0000:c6:00.1: xdna_mailbox.126: opcode 0x18 size 12 id 0x1d0000d7
+# Data Fabric deferred error, 3 times in our netconsole logs. Each lands inside an NPU image job: after a CHAIN_EXEC_NPU send on mailbox channel 127 and before its response (size 12 line). It never appeared outside such a job. None appeared in the runs of freezes 7 to 9 and the FCLK tests.
+# Mailbox send/response lines only; request dumps removed.
+
+[  729.051221] amdxdna 0000:c6:00.1: xdna_mailbox.127: opcode 0x18 size 24 id 0x1d000074
+[  729.071741] amdxdna 0000:c6:00.1: xdna_mailbox.127: opcode 0x18 size 12 id 0x1d000074
+[  729.105130] amdxdna 0000:c6:00.1: xdna_mailbox.127: opcode 0x18 size 24 id 0x1d000075
+[  729.125731] amdxdna 0000:c6:00.1: xdna_mailbox.127: opcode 0x18 size 12 id 0x1d000075
+[  729.159954] amdxdna 0000:c6:00.1: xdna_mailbox.127: opcode 0x18 size 24 id 0x1d000076
+[  729.180700] amdxdna 0000:c6:00.1: xdna_mailbox.127: opcode 0x18 size 12 id 0x1d000076
+[  729.215555] amdxdna 0000:c6:00.1: xdna_mailbox.127: opcode 0x18 size 24 id 0x1d000077
+[  729.235980] amdxdna 0000:c6:00.1: xdna_mailbox.127: opcode 0x18 size 12 id 0x1d000077
+[  729.270400] amdxdna 0000:c6:00.1: xdna_mailbox.127: opcode 0x18 size 24 id 0x1d000078
+[  729.290923] amdxdna 0000:c6:00.1: xdna_mailbox.127: opcode 0x18 size 12 id 0x1d000078
 [  729.324116] amdxdna 0000:c6:00.1: xdna_mailbox.127: opcode 0x18 size 24 id 0x1d000079
 [  729.330230] mce: [Hardware Error]: Machine check events logged
 [  729.330276] [Hardware Error]: Deferred error, no action required.
 [  729.330281] [Hardware Error]: CPU:0 (1a:70:0) MC28_STATUS[-|-|MiscV|-|-|-|SyndV|Deferred|-|-]: 0x982010000004080b
 [  729.330301] [Hardware Error]: IPID: 0x0001002e1f003200, Syndrome: 0x000000005b000000
-[  729.330315] 
 [  729.330319] [Hardware Error]: Power, Interrupts, etc. Ext. Error Code: 4
 [  729.330322] [Hardware Error]: cache level: L3/GEN, mem/io: IO, mem-tx: GEN, part-proc: SRC (no timeout)
 [  729.344703] amdxdna 0000:c6:00.1: xdna_mailbox.127: opcode 0x18 size 12 id 0x1d000079
+[  729.378059] amdxdna 0000:c6:00.1: xdna_mailbox.127: opcode 0x18 size 24 id 0x1d00007a
+[  729.398581] amdxdna 0000:c6:00.1: xdna_mailbox.127: opcode 0x18 size 12 id 0x1d00007a
+
+[  611.329297] amdxdna 0000:c6:00.1: xdna_mailbox.127: opcode 0x18 size 12 id 0x1d000002
+[  611.363262] amdxdna 0000:c6:00.1: xdna_mailbox.127: opcode 0x18 size 24 id 0x1d000003
+[  611.378748] mce: [Hardware Error]: Machine check events logged
+[  611.378774] [Hardware Error]: Deferred error, no action required.
+[  611.378778] [Hardware Error]: CPU:0 (1a:70:0) MC28_STATUS[-|-|MiscV|-|-|-|SyndV|Deferred|-|-]: 0x982010000004080b
+[  611.378792] [Hardware Error]: IPID: 0x0001002e1f003200, Syndrome: 0x000000005b000000
+[  611.378796] [Hardware Error]: Power, Interrupts, etc. Ext. Error Code: 4
+[  611.378797] [Hardware Error]: cache level: L3/GEN, mem/io: IO, mem-tx: GEN, part-proc: SRC (no timeout)
+[  611.383787] amdxdna 0000:c6:00.1: xdna_mailbox.127: opcode 0x18 size 12 id 0x1d000003
+
+[  519.003071] amdxdna 0000:c6:00.1: xdna_mailbox.127: opcode 0x18 size 12 id 0x1d000000
+[  519.032709] amdxdna 0000:c6:00.1: xdna_mailbox.127: opcode 0x18 size 24 id 0x1d000001
+[  519.050205] mce: [Hardware Error]: Machine check events logged
+[  519.050239] [Hardware Error]: Deferred error, no action required.
+[  519.050245] [Hardware Error]: CPU:0 (1a:70:0) MC28_STATUS[Over|-|MiscV|-|-|-|SyndV|Deferred|-|-]: 0xd82010000004080b
+[  519.050271] [Hardware Error]: IPID: 0x0001002e1f003200, Syndrome: 0x000000005b000000
+[  519.050281] [Hardware Error]: Power, Interrupts, etc. Ext. Error Code: 4
+[  519.050285] [Hardware Error]: cache level: L3/GEN, mem/io: IO, mem-tx: GEN, part-proc: SRC (no timeout)
+[  519.053096] amdxdna 0000:c6:00.1: xdna_mailbox.127: opcode 0x18 size 12 id 0x1d000001
 
 # After a freeze and power cycle (journalctl -k -b 0):
 Previous system reset reason [0x00200800]: ACPI power state transition occurred
